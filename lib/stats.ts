@@ -61,6 +61,8 @@ export interface DayRow {
   earnings: number | null;
   gamblingNet: number | null;
   habitPct: number | null;
+  sleptOnTime: number | null; // 1 = voor middernacht geslapen, 0 = niet
+  upBefore9: number | null; // 1 = op tijd op, 0 = niet
 }
 
 const HABIT_KEYS = [
@@ -113,6 +115,7 @@ export function buildDays(data: RawData, days: number): DayRow[] {
       restingHr: null, hrv: null,
       weight: null, alcohol: null, workoutMin: null,
       spending: null, earnings: null, gamblingNet: null, habitPct: null,
+      sleptOnTime: null, upBefore9: null,
     });
   }
 
@@ -143,6 +146,9 @@ export function buildDays(data: RawData, days: number): DayRow[] {
     let done = 0;
     for (const k of HABIT_KEYS) if (h[k] === true) done++;
     r.habitPct = Math.round((done / HABIT_KEYS.length) * 100);
+    r.sleptOnTime =
+      h.slept_on_time === true ? 1 : h.slept_on_time === false ? 0 : null;
+    r.upBefore9 = h.up_before_9 === true ? 1 : h.up_before_9 === false ? 0 : null;
   }
 
   for (const s of data.sleeps) {
@@ -165,8 +171,8 @@ export function buildDays(data: RawData, days: number): DayRow[] {
     if (!r) continue;
     if (a.resting_hr != null) r.restingHr = Number(a.resting_hr);
     if (a.hrv != null) r.hrv = Number(a.hrv);
-    // slaap uit Health als fallback wanneer er geen knop-gebaseerde nacht is
-    if (r.sleepH == null && a.sleep_min != null) {
+    // slaap-uren komen bij voorkeur uit Health (echte slaaptijd)
+    if (a.sleep_min != null) {
       r.sleepH = Math.round((Number(a.sleep_min) / 60) * 10) / 10;
     }
   }

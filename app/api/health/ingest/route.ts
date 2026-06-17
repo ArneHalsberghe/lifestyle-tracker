@@ -67,6 +67,22 @@ export async function POST(req: NextRequest) {
       hasActivity = true;
     }
   }
+  // Slaapduur uit Health: ofwel rechtstreeks (sleep_minutes), ofwel uit
+  // start/eind van de slaapperiode (dan rekenen we de minuten hier uit).
+  if (activity["sleep_min"] === undefined) {
+    const ss = typeof body.sleep_start === "string" ? body.sleep_start : null;
+    const se = typeof body.sleep_end === "string" ? body.sleep_end : null;
+    if (ss && se) {
+      const mins = Math.round(
+        (new Date(se).getTime() - new Date(ss).getTime()) / 60000,
+      );
+      if (mins > 0 && mins < 24 * 60) {
+        activity["sleep_min"] = mins;
+        hasActivity = true;
+      }
+    }
+  }
+
   if (hasActivity) {
     await admin
       .from("daily_activity")

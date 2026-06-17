@@ -79,6 +79,8 @@ export default function StatsClient({ days }: { days: DayRow[] }) {
   const fatigue = round1(mean(rows, "fatigue"));
   const restingHr = round1(mean(rows, "restingHr"));
   const hrv = round1(mean(rows, "hrv"));
+  const onTimeUp = mean(rows, "upBefore9");
+  const beforeMidnight = mean(rows, "sleptOnTime");
   const habit = mean(rows, "habitPct");
   const [w0, w1] = firstLast(rows, "weight");
   const weightDelta = w0 != null && w1 != null ? Math.round((w1 - w0) * 10) / 10 : null;
@@ -114,6 +116,16 @@ export default function StatsClient({ days }: { days: DayRow[] }) {
       <section className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <Kpi label="Gem. energie" value={energy != null ? `${energy}/10` : "—"} tone={energy != null && energy >= 7 ? "good" : "neutral"} />
         <Kpi label="Gem. slaap" value={sleep != null ? `${sleep} u` : "—"} />
+        <Kpi
+          label="Op tijd op (9u)"
+          value={onTimeUp != null ? `${Math.round(onTimeUp * 100)}%` : "—"}
+          tone={onTimeUp != null && onTimeUp >= 0.7 ? "good" : "neutral"}
+        />
+        <Kpi
+          label="Voor middernacht"
+          value={beforeMidnight != null ? `${Math.round(beforeMidnight * 100)}%` : "—"}
+          tone={beforeMidnight != null && beforeMidnight >= 0.7 ? "good" : "neutral"}
+        />
         <Kpi label="Gem. stress" value={stress != null ? `${stress}/10` : "—"} tone={stress != null && stress >= 6 ? "bad" : "neutral"} />
         <Kpi label="Gem. vermoeidheid" value={fatigue != null ? `${fatigue}/10` : "—"} />
         <Kpi label="Rusthartslag" value={restingHr != null ? `${restingHr}` : "—"} />
