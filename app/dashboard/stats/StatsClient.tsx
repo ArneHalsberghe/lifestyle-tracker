@@ -274,7 +274,7 @@ function LineCard({
               <YAxis domain={domain ?? ["auto", "auto"]} tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={28} />
               <Tooltip contentStyle={tooltipStyle} />
               {lines.map((l) => (
-                <Line key={String(l.key)} type="monotone" dataKey={l.key as string} name={l.label} stroke={l.color} strokeWidth={2} dot={false} connectNulls />
+                <Line key={String(l.key)} type="monotone" dataKey={l.key as string} name={l.label} stroke={l.color} strokeWidth={2} dot={{ r: 2 }} connectNulls />
               ))}
             </LineChart>
           </ResponsiveContainer>

@@ -113,7 +113,7 @@ export default function CheckinCharts({ series }: { series: DayPoint[] }) {
                     name={l.label}
                     stroke={l.color}
                     strokeWidth={2}
-                    dot={false}
+                    dot={{ r: 2 }}
                     connectNulls
                   />
                 ))}
