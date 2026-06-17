@@ -15,7 +15,7 @@ create table if not exists public.app_settings (
   updated_at         timestamptz not null default now()
 );
 
-create trigger trg_app_settings_updated_at
+create or replace trigger trg_app_settings_updated_at
   before update on public.app_settings
   for each row execute function public.set_updated_at();
 

@@ -23,7 +23,7 @@ create table if not exists public.food_days (
   unique (user_id, date)
 );
 
-create trigger trg_food_days_updated_at
+create or replace trigger trg_food_days_updated_at
   before update on public.food_days
   for each row execute function public.set_updated_at();
 

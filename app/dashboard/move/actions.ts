@@ -9,8 +9,6 @@ function brusselsToday() {
   }).format(new Date());
 }
 
-export const SPORTS = ["lopen", "fietsen", "wandelen", "padel", "zwemmen"] as const;
-
 export async function logWorkout(input: {
   activity_type: string;
   duration_min: number;

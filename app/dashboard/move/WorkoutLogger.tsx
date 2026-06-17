@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { logWorkout, SPORTS } from "./actions";
+import { logWorkout } from "./actions";
+
+const SPORTS = ["lopen", "fietsen", "wandelen", "padel", "zwemmen"] as const;
 
 const EMOJI: Record<string, string> = {
   lopen: "🏃",

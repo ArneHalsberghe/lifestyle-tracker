@@ -14,7 +14,7 @@ create table if not exists public.reminder_prefs (
   unique (user_id, reminder_key)
 );
 
-create trigger trg_reminder_prefs_updated_at
+create or replace trigger trg_reminder_prefs_updated_at
   before update on public.reminder_prefs
   for each row execute function public.set_updated_at();
 

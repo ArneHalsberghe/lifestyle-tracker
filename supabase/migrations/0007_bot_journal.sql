@@ -23,7 +23,7 @@ create table if not exists public.assistant_memory (
   updated_at timestamptz not null default now()
 );
 
-create trigger trg_assistant_memory_updated_at
+create or replace trigger trg_assistant_memory_updated_at
   before update on public.assistant_memory
   for each row execute function public.set_updated_at();
 
@@ -46,7 +46,7 @@ create unique index if not exists uniq_journal_bot_per_day
 create index if not exists idx_journal_user_date
   on public.journal_entries (user_id, date desc);
 
-create trigger trg_journal_updated_at
+create or replace trigger trg_journal_updated_at
   before update on public.journal_entries
   for each row execute function public.set_updated_at();
 

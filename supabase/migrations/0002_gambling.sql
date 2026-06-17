@@ -38,7 +38,7 @@ create table if not exists public.gambling_limits (
   updated_at        timestamptz not null default now()
 );
 
-create trigger trg_gambling_limits_updated_at
+create or replace trigger trg_gambling_limits_updated_at
   before update on public.gambling_limits
   for each row execute function public.set_updated_at();
 

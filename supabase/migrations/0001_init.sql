@@ -152,7 +152,7 @@ create table if not exists public.integrations (
   unique (user_id, provider)
 );
 
-create trigger trg_integrations_updated_at
+create or replace trigger trg_integrations_updated_at
   before update on public.integrations
   for each row execute function public.set_updated_at();
 

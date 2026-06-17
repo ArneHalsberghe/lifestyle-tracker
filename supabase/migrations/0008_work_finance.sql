@@ -32,7 +32,7 @@ create table if not exists public.finance_settings (
   updated_at          timestamptz not null default now()
 );
 
-create trigger trg_finance_settings_updated_at
+create or replace trigger trg_finance_settings_updated_at
   before update on public.finance_settings
   for each row execute function public.set_updated_at();
 

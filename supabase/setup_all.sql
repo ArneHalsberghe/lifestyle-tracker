@@ -1,5 +1,5 @@
 -- =============================================================
--- Lifestyle Tracker — VOLLEDIGE database setup
+-- Lifestyle Tracker — VOLLEDIGE database setup (herhaalbaar)
 -- Plak dit hele bestand in Supabase > SQL Editor en klik Run.
 -- =============================================================
 
@@ -159,7 +159,7 @@ create table if not exists public.integrations (
   unique (user_id, provider)
 );
 
-create trigger trg_integrations_updated_at
+create or replace trigger trg_integrations_updated_at
   before update on public.integrations
   for each row execute function public.set_updated_at();
 
@@ -261,7 +261,7 @@ create table if not exists public.gambling_limits (
   updated_at        timestamptz not null default now()
 );
 
-create trigger trg_gambling_limits_updated_at
+create or replace trigger trg_gambling_limits_updated_at
   before update on public.gambling_limits
   for each row execute function public.set_updated_at();
 
@@ -323,7 +323,7 @@ create table if not exists public.user_profile (
   updated_at     timestamptz not null default now()
 );
 
-create trigger trg_user_profile_updated_at
+create or replace trigger trg_user_profile_updated_at
   before update on public.user_profile
   for each row execute function public.set_updated_at();
 
@@ -638,7 +638,7 @@ create table if not exists public.food_days (
   unique (user_id, date)
 );
 
-create trigger trg_food_days_updated_at
+create or replace trigger trg_food_days_updated_at
   before update on public.food_days
   for each row execute function public.set_updated_at();
 
@@ -707,7 +707,7 @@ create table if not exists public.assistant_memory (
   updated_at timestamptz not null default now()
 );
 
-create trigger trg_assistant_memory_updated_at
+create or replace trigger trg_assistant_memory_updated_at
   before update on public.assistant_memory
   for each row execute function public.set_updated_at();
 
@@ -730,7 +730,7 @@ create unique index if not exists uniq_journal_bot_per_day
 create index if not exists idx_journal_user_date
   on public.journal_entries (user_id, date desc);
 
-create trigger trg_journal_updated_at
+create or replace trigger trg_journal_updated_at
   before update on public.journal_entries
   for each row execute function public.set_updated_at();
 
@@ -789,7 +789,7 @@ create table if not exists public.finance_settings (
   updated_at          timestamptz not null default now()
 );
 
-create trigger trg_finance_settings_updated_at
+create or replace trigger trg_finance_settings_updated_at
   before update on public.finance_settings
   for each row execute function public.set_updated_at();
 
@@ -837,7 +837,7 @@ create table if not exists public.app_settings (
   updated_at         timestamptz not null default now()
 );
 
-create trigger trg_app_settings_updated_at
+create or replace trigger trg_app_settings_updated_at
   before update on public.app_settings
   for each row execute function public.set_updated_at();
 
@@ -877,7 +877,7 @@ create table if not exists public.reminder_prefs (
   unique (user_id, reminder_key)
 );
 
-create trigger trg_reminder_prefs_updated_at
+create or replace trigger trg_reminder_prefs_updated_at
   before update on public.reminder_prefs
   for each row execute function public.set_updated_at();
 

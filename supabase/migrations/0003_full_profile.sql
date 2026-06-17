@@ -21,7 +21,7 @@ create table if not exists public.user_profile (
   updated_at     timestamptz not null default now()
 );
 
-create trigger trg_user_profile_updated_at
+create or replace trigger trg_user_profile_updated_at
   before update on public.user_profile
   for each row execute function public.set_updated_at();
 
