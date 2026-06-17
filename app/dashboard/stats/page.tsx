@@ -92,6 +92,13 @@ export default async function StatsPage() {
         </Link>
       </header>
 
+      <a
+        href="shortcuts://run-shortcut?name=HealthSync"
+        className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-border bg-surface py-2.5 text-sm font-medium text-accent active:scale-[0.98]"
+      >
+        🔄 Gezondheidsdata ophalen
+      </a>
+
       <StatsClient days={days} />
     </main>
   );
