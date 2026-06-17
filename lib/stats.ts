@@ -52,6 +52,8 @@ export interface DayRow {
   sleepH: number | null; // uren
   bedtimeMin: number | null;
   wakeMin: number | null;
+  restingHr: number | null;
+  hrv: number | null;
   weight: number | null;
   alcohol: number | null;
   workoutMin: number | null;
@@ -81,6 +83,12 @@ export interface RawData {
   workouts: { started_at: string; duration_min: number | null }[];
   gambling: GamblingSessionWithEntries[];
   workLogs: { date: string; project_id: string; hours: number }[];
+  activity: {
+    date: string;
+    resting_hr: number | null;
+    hrv: number | null;
+    sleep_min: number | null;
+  }[];
   rates: Map<string, number>;
   taxRate: number;
 }
@@ -102,6 +110,7 @@ export function buildDays(data: RawData, days: number): DayRow[] {
       happiness: null, stress: null, anxiety: null, motivation: null,
       social: null, loneliness: null,
       sleepH: null, bedtimeMin: null, wakeMin: null,
+      restingHr: null, hrv: null,
       weight: null, alcohol: null, workoutMin: null,
       spending: null, earnings: null, gamblingNet: null, habitPct: null,
     });
@@ -148,6 +157,17 @@ export function buildDays(data: RawData, days: number): DayRow[] {
         ) / 10;
       r.bedtimeMin = brusselsMinutes(s.sleep_start_at);
       r.wakeMin = brusselsMinutes(s.wake_at);
+    }
+  }
+
+  for (const a of data.activity) {
+    const r = map.get(a.date);
+    if (!r) continue;
+    if (a.resting_hr != null) r.restingHr = Number(a.resting_hr);
+    if (a.hrv != null) r.hrv = Number(a.hrv);
+    // slaap uit Health als fallback wanneer er geen knop-gebaseerde nacht is
+    if (r.sleepH == null && a.sleep_min != null) {
+      r.sleepH = Math.round((Number(a.sleep_min) / 60) * 10) / 10;
     }
   }
 

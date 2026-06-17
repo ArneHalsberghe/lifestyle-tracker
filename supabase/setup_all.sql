@@ -910,3 +910,14 @@ alter table public.app_settings add column if not exists health_token text;
 create unique index if not exists uniq_app_settings_health_token
   on public.app_settings (health_token)
   where health_token is not null;
+
+-- >>>>>>>>>>>>>>>>>>>> 0012_health_hrv_sleep.sql <<<<<<<<<<<<<<<<<<<<
+
+-- =============================================================
+-- Lifestyle Tracker — extra Health-data: HRV + slaap uit Health
+-- Run AFTER 0011, in Supabase SQL Editor.
+-- (resting_hr bestaat al op daily_activity sinds 0001.)
+-- =============================================================
+
+alter table public.daily_activity add column if not exists hrv       integer;
+alter table public.daily_activity add column if not exists sleep_min integer;

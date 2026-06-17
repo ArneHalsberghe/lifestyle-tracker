@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
     ["active_minutes", "active_minutes"],
     ["active_calories", "active_calories"],
     ["resting_hr", "resting_hr"],
+    ["hrv", "hrv"],
+    ["sleep_minutes", "sleep_min"],
     ["floors", "floors"],
   ] as const) {
     const v = num(body[key]);

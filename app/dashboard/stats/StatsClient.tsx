@@ -77,6 +77,8 @@ export default function StatsClient({ days }: { days: DayRow[] }) {
   const sleep = round1(mean(rows, "sleepH"));
   const stress = round1(mean(rows, "stress"));
   const fatigue = round1(mean(rows, "fatigue"));
+  const restingHr = round1(mean(rows, "restingHr"));
+  const hrv = round1(mean(rows, "hrv"));
   const habit = mean(rows, "habitPct");
   const [w0, w1] = firstLast(rows, "weight");
   const weightDelta = w0 != null && w1 != null ? Math.round((w1 - w0) * 10) / 10 : null;
@@ -114,6 +116,8 @@ export default function StatsClient({ days }: { days: DayRow[] }) {
         <Kpi label="Gem. slaap" value={sleep != null ? `${sleep} u` : "—"} />
         <Kpi label="Gem. stress" value={stress != null ? `${stress}/10` : "—"} tone={stress != null && stress >= 6 ? "bad" : "neutral"} />
         <Kpi label="Gem. vermoeidheid" value={fatigue != null ? `${fatigue}/10` : "—"} />
+        <Kpi label="Rusthartslag" value={restingHr != null ? `${restingHr}` : "—"} />
+        <Kpi label="HRV" value={hrv != null ? `${hrv}` : "—"} />
         <Kpi label="Gewicht Δ" value={weightDelta != null ? `${weightDelta > 0 ? "+" : ""}${weightDelta} kg` : "—"} />
         <Kpi label="Gewoontes" value={habit != null ? `${Math.round(habit)}%` : "—"} />
         <Kpi label="Verdiend (netto)" value={formatEUR(earnings)} tone="good" />
@@ -163,6 +167,10 @@ export default function StatsClient({ days }: { days: DayRow[] }) {
           { key: "motivation", label: "Motivatie", color: "#4f9dff" },
         ]} />
         <BarCard title="😴 Slaap (uren)" data={rows.map((r) => ({ week: r.label, value: r.sleepH ?? 0 }))} color="#818cf8" />
+        <LineCard title="❤️ Rusthartslag & HRV" rows={rows} lines={[
+          { key: "restingHr", label: "Rusthartslag", color: "#f87171" },
+          { key: "hrv", label: "HRV", color: "#34d399" },
+        ]} />
         <LineCard title="⚖️ Gewicht (kg)" rows={rows} lines={[{ key: "weight", label: "Gewicht", color: "#4f9dff" }]} />
         <BarWeekCard title="🏃 Sport (min/week)" rows={rows} metric="workoutMin" color="#34d399" />
         <BarWeekCard title="💼 Netto verdiend (/week)" rows={rows} metric="earnings" color="#34d399" money />
@@ -187,6 +195,11 @@ function buildCorrelations(rows: DayRow[]): Corr[] {
     { a: "workoutMin", b: "sleepH", pos: "Meer bewegen gaat samen met meer slaap", neg: "Meer bewegen gaat samen met minder slaap" },
     { a: "habitPct", b: "energyAvg", pos: "Meer gewoontes afvinken gaat samen met meer energie", neg: "Meer gewoontes afvinken gaat samen met minder energie" },
     { a: "overstim", b: "fatigue", pos: "Meer overprikkeling gaat samen met meer vermoeidheid", neg: "Meer overprikkeling gaat samen met minder vermoeidheid" },
+    { a: "restingHr", b: "fatigue", pos: "Hogere rusthartslag gaat samen met meer vermoeidheid", neg: "Hogere rusthartslag gaat samen met minder vermoeidheid" },
+    { a: "hrv", b: "energyAvg", pos: "Hogere HRV gaat samen met meer energie", neg: "Hogere HRV gaat samen met minder energie" },
+    { a: "hrv", b: "fatigue", pos: "Hogere HRV gaat samen met meer vermoeidheid", neg: "Hogere HRV gaat samen met minder vermoeidheid" },
+    { a: "restingHr", b: "stress", pos: "Hogere rusthartslag gaat samen met meer stress", neg: "Hogere rusthartslag gaat samen met minder stress" },
+    { a: "sleepH", b: "restingHr", pos: "Meer slaap gaat samen met hogere rusthartslag", neg: "Meer slaap gaat samen met lagere rusthartslag" },
   ];
   const out: Corr[] = [];
   for (const d of defs) {

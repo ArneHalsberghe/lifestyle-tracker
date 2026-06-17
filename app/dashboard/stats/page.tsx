@@ -33,6 +33,7 @@ export default async function StatsPage() {
     workouts,
     gambling,
     workLogs,
+    activity,
     projects,
     fin,
   ] = await Promise.all([
@@ -54,6 +55,10 @@ export default async function StatsPage() {
       .select("*, gambling_entries(*)")
       .gte("started_at", sinceTs),
     supabase.from("work_logs").select("date, project_id, hours").gte("date", since),
+    supabase
+      .from("daily_activity")
+      .select("date, resting_hr, hrv, sleep_min")
+      .gte("date", since),
     supabase.from("work_projects").select("id, hourly_rate"),
     supabase.from("finance_settings").select("income_tax_rate").maybeSingle(),
   ]);
@@ -71,6 +76,7 @@ export default async function StatsPage() {
     workouts: (workouts.data ?? []) as RawData["workouts"],
     gambling: (gambling.data ?? []) as GamblingSessionWithEntries[],
     workLogs: (workLogs.data ?? []) as RawData["workLogs"],
+    activity: (activity.data ?? []) as RawData["activity"],
     rates,
     taxRate: Number(fin.data?.income_tax_rate ?? 0.5),
   };
