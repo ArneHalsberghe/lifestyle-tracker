@@ -113,7 +113,7 @@ export const PHASES: PhaseConfig[] = [
     emoji: "🌅",
     intro: "Hoe start je de dag?",
     metricKeys: ["energy_morning", "fatigue", "brain_fog", "anxiety", "motivation"],
-    habitKeys: ["slept_on_time", "up_before_9"],
+    habitKeys: [], // op tijd geslapen / op tijd op wordt automatisch afgeleid uit de slaap-knoppen
     mealKeys: [],
     showAlcohol: false,
     showSpending: false,

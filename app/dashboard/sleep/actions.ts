@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { TZ } from "@/lib/sleep";
+import { TZ, brusselsHM, GOAL_WAKE_H, GOAL_WAKE_GRACE_MIN } from "@/lib/sleep";
 
 function brusselsToday(): string {
   // en-CA gives YYYY-MM-DD
@@ -56,7 +56,7 @@ export async function goToSleep() {
 
 /** "Dag starten — gsm nemen": sluit de nacht af. */
 export async function wakeUp() {
-  const { supabase } = await auth();
+  const { supabase, userId } = await auth();
   const open = await findOpenNight(supabase);
   if (!open) throw new Error("Er loopt geen nacht. Druk eerst op 'telefoon weg'.");
 
@@ -67,16 +67,33 @@ export async function wakeUp() {
       )
     : null;
 
+  const date = brusselsToday();
+
   const { error } = await supabase
     .from("sleep_logs")
-    .update({
-      wake_at: now,
-      date: brusselsToday(),
-      duration_min: duration,
-    })
+    .update({ wake_at: now, date, duration_min: duration })
     .eq("id", open.id);
   if (error) throw new Error(error.message);
+
+  // Leid de gewoontes automatisch af uit de knop-tijden (geen vraag meer in de check-in).
+  const sleptOnTime = open.sleep_start_at
+    ? brusselsHM(open.sleep_start_at).h >= 12 // naar bed vóór middernacht
+    : null;
+  const wake = brusselsHM(now);
+  const upBefore9 = wake.h * 60 + wake.m <= GOAL_WAKE_H * 60 + GOAL_WAKE_GRACE_MIN;
+
+  await supabase.from("daily_habits").upsert(
+    {
+      user_id: userId,
+      date,
+      slept_on_time: sleptOnTime,
+      up_before_9: upBefore9,
+    },
+    { onConflict: "user_id,date" },
+  );
+
   revalidatePath("/dashboard/sleep");
+  revalidatePath("/dashboard/checkin");
   revalidatePath("/dashboard");
 }
 
