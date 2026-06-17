@@ -1,6 +1,6 @@
 # Lifestyle Tracker
 
-<!-- live op Vercel -->
+<!-- live op Vercel (public repo) -->
 
 Persoonlijke PWA om je levensstijl te tracken: slaap & energie, eten & drinken,
 beweging & sport, en stemming & gewoontes. Gebouwd met **Next.js 15** +
