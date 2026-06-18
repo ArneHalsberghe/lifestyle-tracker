@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { MEALS, brusselsToday, type MealKey } from "@/lib/food";
+import { MEALS, type MealKey } from "@/lib/food";
 
 async function auth() {
   const supabase = await createClient();
@@ -13,10 +13,10 @@ async function auth() {
   return { supabase, userId: user.id };
 }
 
-async function patchFoodDay(patch: Record<string, unknown>) {
+async function patchFoodDay(date: string, patch: Record<string, unknown>) {
   const { supabase, userId } = await auth();
   const { error } = await supabase.from("food_days").upsert(
-    { user_id: userId, date: brusselsToday(), ...patch },
+    { user_id: userId, date, ...patch },
     { onConflict: "user_id,date" },
   );
   if (error) throw new Error(error.message);
@@ -24,41 +24,44 @@ async function patchFoodDay(patch: Record<string, unknown>) {
   revalidatePath("/dashboard/checkin");
 }
 
-export async function setMealEaten(meal: MealKey, eaten: boolean | null) {
+export async function setMealEaten(date: string, meal: MealKey, eaten: boolean | null) {
   const def = MEALS.find((m) => m.key === meal)!;
   const patch: Record<string, unknown> = { [def.eatenCol]: eaten };
-  if (eaten !== true) patch[def.healthyCol] = null; // reset healthy if not eaten
-  await patchFoodDay(patch);
+  if (eaten !== true) patch[def.healthyCol] = null;
+  await patchFoodDay(date, patch);
 }
 
-export async function setMealHealthy(meal: MealKey, healthy: boolean) {
+export async function setMealHealthy(date: string, meal: MealKey, healthy: boolean) {
   const def = MEALS.find((m) => m.key === meal)!;
-  await patchFoodDay({ [def.eatenCol]: true, [def.healthyCol]: healthy });
+  await patchFoodDay(date, { [def.eatenCol]: true, [def.healthyCol]: healthy });
 }
 
-export async function setAlcohol(units: number) {
-  await patchFoodDay({ alcohol_units: units >= 0 ? units : 0 });
+export async function setAlcohol(date: string, units: number) {
+  await patchFoodDay(date, { alcohol_units: units >= 0 ? units : 0 });
 }
 
-export async function markCaffeine(which: "first" | "last") {
+export async function markCaffeine(date: string, which: "first" | "last") {
   const col = which === "first" ? "first_caffeine_at" : "last_caffeine_at";
-  await patchFoodDay({ [col]: new Date().toISOString() });
+  await patchFoodDay(date, { [col]: new Date().toISOString() });
 }
 
-export async function clearCaffeine(which: "first" | "last") {
+export async function clearCaffeine(date: string, which: "first" | "last") {
   const col = which === "first" ? "first_caffeine_at" : "last_caffeine_at";
-  await patchFoodDay({ [col]: null });
+  await patchFoodDay(date, { [col]: null });
 }
 
-export async function saveFoodNotes(notes: string) {
-  await patchFoodDay({ notes: notes.trim() || null });
+export async function saveFoodNotes(date: string, notes: string) {
+  await patchFoodDay(date, { notes: notes.trim() || null });
 }
 
-export async function addSnack(input: { healthy: boolean | null; note?: string }) {
+export async function addSnack(
+  date: string,
+  input: { healthy: boolean | null; note?: string },
+) {
   const { supabase, userId } = await auth();
   const { error } = await supabase.from("snacks").insert({
     user_id: userId,
-    date: brusselsToday(),
+    date,
     healthy: input.healthy,
     note: input.note?.trim() || null,
   });

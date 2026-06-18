@@ -16,6 +16,7 @@ import {
   type CheckinMetricKey,
   type Phase,
 } from "@/lib/checkin";
+import DateNav from "@/components/DateNav";
 import PhasedCheckin from "./PhasedCheckin";
 import CheckinCharts from "./CheckinCharts";
 
@@ -28,9 +29,15 @@ function isoDaysAgo(n: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export default async function CheckinPage() {
+export default async function CheckinPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
   const supabase = await createClient();
-  const today = brusselsToday();
+  const realToday = brusselsToday();
+  const sp = await searchParams;
+  const date = sp.date && sp.date <= realToday ? sp.date : realToday;
 
   const [
     { data: checkinsData },
@@ -49,7 +56,7 @@ export default async function CheckinPage() {
       .select("*")
       .gte("date", isoDaysAgo(60))
       .order("date", { ascending: true }),
-    supabase.from("food_days").select("*").eq("date", today).maybeSingle(),
+    supabase.from("food_days").select("*").eq("date", date).maybeSingle(),
     supabase
       .from("app_settings")
       .select("household_enabled, household_minutes")
@@ -57,15 +64,15 @@ export default async function CheckinPage() {
     supabase
       .from("body_measurements")
       .select("weight_kg")
-      .eq("date", today)
+      .eq("date", date)
       .maybeSingle(),
   ]);
 
   const checkins = (checkinsData ?? []) as DailyCheckin[];
   const habits = (habitsData ?? []) as DailyHabits[];
 
-  const todayCheckin = checkins.find((c) => c.date === today);
-  const todayHabits = habits.find((h) => h.date === today);
+  const todayCheckin = checkins.find((c) => c.date === date);
+  const todayHabits = habits.find((h) => h.date === date);
   const food = (foodToday as FoodDay) ?? null;
 
   // Prefill the phased form
@@ -108,9 +115,12 @@ export default async function CheckinPage() {
         Drie keer per dag: ochtend, middag en avond — elk met eigen vragen.
       </p>
 
+      <DateNav date={date} basePath="/dashboard/checkin" />
+
       <PhasedCheckin
+        key={date}
         initialPhase={currentPhase()}
-        date={today}
+        date={date}
         metrics={metrics}
         habits={habitsRecord}
         food={foodRecord}

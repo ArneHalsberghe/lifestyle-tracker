@@ -16,6 +16,7 @@ const cards = [
   { title: "Stemming", emoji: "🙂", hint: "Hoe voel je je?", href: "/dashboard/mood" },
   { title: "Gokken", emoji: "🎲", hint: "Start een sessie of bekijk stats", href: "/dashboard/gambling" },
   { title: "Werk & geld", emoji: "💼", hint: "Uren, projecten & verdiensten", href: "/dashboard/work" },
+  { title: "Financiën", emoji: "💶", hint: "Inkomsten & uitgaven per maand", href: "/dashboard/finance" },
   { title: "Statistieken", emoji: "📊", hint: "Grafieken, cijfers & verbanden", href: "/dashboard/stats" },
 ];
 

@@ -17,9 +17,11 @@ import {
 export default function FoodLogger({
   food,
   snacks,
+  date,
 }: {
   food: FoodDay | null;
   snacks: Snack[];
+  date: string;
 }) {
   const [pending, run] = useTransition();
   const act = (fn: () => Promise<void>) => run(() => fn());
@@ -44,7 +46,7 @@ export default function FoodLogger({
                       active={eaten === true}
                       tone="good"
                       disabled={pending}
-                      onClick={() => act(() => setMealEaten(m.key, true))}
+                      onClick={() => act(() => setMealEaten(date, m.key, true))}
                     >
                       Gegeten
                     </Pill>
@@ -52,7 +54,7 @@ export default function FoodLogger({
                       active={eaten === false}
                       tone="bad"
                       disabled={pending}
-                      onClick={() => act(() => setMealEaten(m.key, false))}
+                      onClick={() => act(() => setMealEaten(date, m.key, false))}
                     >
                       Niet
                     </Pill>
@@ -65,7 +67,7 @@ export default function FoodLogger({
                       active={healthy === true}
                       tone="good"
                       disabled={pending}
-                      onClick={() => act(() => setMealHealthy(m.key, true))}
+                      onClick={() => act(() => setMealHealthy(date, m.key, true))}
                     >
                       Gezond
                     </Pill>
@@ -73,7 +75,7 @@ export default function FoodLogger({
                       active={healthy === false}
                       tone="bad"
                       disabled={pending}
-                      onClick={() => act(() => setMealHealthy(m.key, false))}
+                      onClick={() => act(() => setMealHealthy(date, m.key, false))}
                     >
                       Niet gezond
                     </Pill>
@@ -86,7 +88,7 @@ export default function FoodLogger({
       </section>
 
       {/* Snacks */}
-      <SnackSection snacks={snacks} pending={pending} run={run} />
+      <SnackSection snacks={snacks} pending={pending} run={run} date={date} />
 
       {/* Caffeine */}
       <section className="rounded-2xl border border-border bg-surface p-4">
@@ -96,15 +98,15 @@ export default function FoodLogger({
             label="Eerste vandaag"
             time={food?.first_caffeine_at ?? null}
             disabled={pending}
-            onMark={() => act(() => markCaffeine("first"))}
-            onClear={() => act(() => clearCaffeine("first"))}
+            onMark={() => act(() => markCaffeine(date, "first"))}
+            onClear={() => act(() => clearCaffeine(date, "first"))}
           />
           <CaffeineBox
             label="Laatste vandaag"
             time={food?.last_caffeine_at ?? null}
             disabled={pending}
-            onMark={() => act(() => markCaffeine("last"))}
-            onClear={() => act(() => clearCaffeine("last"))}
+            onMark={() => act(() => markCaffeine(date, "last"))}
+            onClear={() => act(() => clearCaffeine(date, "last"))}
           />
         </div>
       </section>
@@ -113,11 +115,11 @@ export default function FoodLogger({
       <AlcoholSection
         units={food?.alcohol_units ?? 0}
         pending={pending}
-        onChange={(u) => act(() => setAlcohol(u))}
+        onChange={(u) => act(() => setAlcohol(date, u))}
       />
 
       {/* Notes */}
-      <NotesSection initial={food?.notes ?? ""} pending={pending} run={run} />
+      <NotesSection initial={food?.notes ?? ""} pending={pending} run={run} date={date} />
     </div>
   );
 }
@@ -126,10 +128,12 @@ function SnackSection({
   snacks,
   pending,
   run,
+  date,
 }: {
   snacks: Snack[];
   pending: boolean;
   run: (fn: () => Promise<void>) => void;
+  date: string;
 }) {
   const [open, setOpen] = useState(false);
   const [healthy, setHealthy] = useState<boolean | null>(null);
@@ -183,7 +187,7 @@ function SnackSection({
               disabled={pending}
               onClick={() =>
                 run(async () => {
-                  await addSnack({ healthy, note });
+                  await addSnack(date, { healthy, note });
                   setOpen(false);
                   setHealthy(null);
                   setNote("");
@@ -255,10 +259,12 @@ function NotesSection({
   initial,
   pending,
   run,
+  date,
 }: {
   initial: string;
   pending: boolean;
   run: (fn: () => Promise<void>) => void;
+  date: string;
 }) {
   const [notes, setNotes] = useState(initial);
   const [done, setDone] = useState(false);
@@ -279,7 +285,7 @@ function NotesSection({
         disabled={pending}
         onClick={() =>
           run(async () => {
-            await saveFoodNotes(notes);
+            await saveFoodNotes(date, notes);
             setDone(true);
           })
         }

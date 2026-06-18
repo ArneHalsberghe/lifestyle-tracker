@@ -223,3 +223,20 @@ export interface WorkLog {
   hours: number;
   note: string | null;
 }
+
+export interface FinanceCategory {
+  id: string;
+  user_id: string;
+  name: string;
+  direction: "in" | "out";
+  sort: number;
+  active: boolean;
+}
+
+export interface FinanceMonthly {
+  id: string;
+  user_id: string;
+  category_id: string;
+  month: string;
+  amount: number;
+}
