@@ -32,12 +32,16 @@ function isoDaysAgo(n: number) {
 export default async function CheckinPage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; phase?: string }>;
 }) {
   const supabase = await createClient();
   const realToday = brusselsToday();
   const sp = await searchParams;
   const date = sp.date && sp.date <= realToday ? sp.date : realToday;
+  const initialPhase: Phase =
+    sp.phase === "morning" || sp.phase === "noon" || sp.phase === "evening"
+      ? sp.phase
+      : currentPhase();
 
   const [
     { data: checkinsData },
@@ -118,8 +122,8 @@ export default async function CheckinPage({
       <DateNav date={date} basePath="/dashboard/checkin" />
 
       <PhasedCheckin
-        key={date}
-        initialPhase={currentPhase()}
+        key={`${date}-${initialPhase}`}
+        initialPhase={initialPhase}
         date={date}
         metrics={metrics}
         habits={habitsRecord}

@@ -80,11 +80,8 @@ export interface HabitDef {
 export const HABITS: HabitDef[] = [
   { key: "up_before_9", label: "Voor 09:00 opgestaan" },
   { key: "no_daytime_sleep", label: "Niet geslapen tussen 09:00 en 22:00" },
-  { key: "steps_7000", label: "Minstens 7000 stappen" },
-  { key: "enough_water", label: "Voldoende water gedronken" },
   { key: "ate_healthy", label: "Gezond gegeten" },
   { key: "no_impulse_spending", label: "Geen impulsieve uitgaven" },
-  { key: "no_online_gambling", label: "Niet online gegokt" },
   { key: "slept_on_time", label: "Op tijd gaan slapen" },
 ];
 
@@ -143,13 +140,7 @@ export const PHASES: PhaseConfig[] = [
     emoji: "🌙",
     intro: "Hoe sluit je de dag af?",
     metricKeys: ["energy_evening", "happiness", "stress", "social_battery", "loneliness"],
-    habitKeys: [
-      "steps_7000",
-      "enough_water",
-      "ate_healthy",
-      "no_impulse_spending",
-      "no_online_gambling",
-    ],
+    habitKeys: ["ate_healthy", "no_impulse_spending"],
     mealKeys: ["dinner"],
     showAlcohol: true,
     showSpending: true,

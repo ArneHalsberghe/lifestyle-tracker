@@ -68,11 +68,8 @@ export interface DayRow {
 const HABIT_KEYS = [
   "up_before_9",
   "no_daytime_sleep",
-  "steps_7000",
-  "enough_water",
   "ate_healthy",
   "no_impulse_spending",
-  "no_online_gambling",
   "slept_on_time",
 ] as const;
 

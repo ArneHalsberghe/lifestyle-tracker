@@ -27,8 +27,28 @@ export default function SleepButtons({
     run(async () => {
       try {
         await goToSleep();
-        // direct door naar de avond-check-in
-        router.push("/dashboard/checkin");
+        // Avond-check-in van de juiste dag: ga je ná middernacht slapen,
+        // dan hoort de avond bij de dag ervoor.
+        const now = new Date();
+        const todayStr = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Europe/Brussels",
+        }).format(now);
+        const hour = Number(
+          new Intl.DateTimeFormat("en-GB", {
+            timeZone: "Europe/Brussels",
+            hour: "2-digit",
+            hour12: false,
+          })
+            .format(now)
+            .replace(/\D/g, ""),
+        );
+        let day = todayStr;
+        if (hour < 12) {
+          const x = new Date(todayStr + "T12:00:00Z");
+          x.setUTCDate(x.getUTCDate() - 1);
+          day = x.toISOString().slice(0, 10);
+        }
+        router.push(`/dashboard/checkin?date=${day}&phase=evening`);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Er ging iets mis.");
       }
