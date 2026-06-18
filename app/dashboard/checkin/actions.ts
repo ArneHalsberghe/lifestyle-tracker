@@ -12,6 +12,8 @@ export interface SavePhaseInput {
   food: Record<string, boolean | null>;
   alcohol?: number | null;
   spending?: number | null;
+  hrv?: number | null;
+  weight?: number | null;
   notes?: string;
 }
 
@@ -33,6 +35,7 @@ export async function savePhase(input: SavePhaseInput) {
   };
   if (input.notes !== undefined) checkinRow.notes = input.notes.trim() || null;
   if (input.spending !== undefined) checkinRow.spending_eur = input.spending;
+  if (input.hrv !== undefined) checkinRow.hrv = input.hrv;
 
   const { error: e1 } = await supabase
     .from("daily_checkins")
@@ -63,7 +66,19 @@ export async function savePhase(input: SavePhaseInput) {
     if (e3) throw new Error(e3.message);
   }
 
+  // dagelijks gewicht (optioneel, in de ochtend)
+  if (input.weight !== undefined && input.weight !== null) {
+    const { error: e4 } = await supabase
+      .from("body_measurements")
+      .upsert(
+        { user_id: user.id, date: input.date, weight_kg: input.weight },
+        { onConflict: "user_id,date" },
+      );
+    if (e4) throw new Error(e4.message);
+  }
+
   revalidatePath("/dashboard/checkin");
   revalidatePath("/dashboard/food");
+  revalidatePath("/dashboard/move");
   revalidatePath("/dashboard");
 }

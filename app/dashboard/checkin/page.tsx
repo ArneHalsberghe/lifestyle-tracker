@@ -37,6 +37,7 @@ export default async function CheckinPage() {
     { data: habitsData },
     { data: foodToday },
     { data: appSettings },
+    { data: bodyToday },
   ] = await Promise.all([
     supabase
       .from("daily_checkins")
@@ -52,6 +53,11 @@ export default async function CheckinPage() {
     supabase
       .from("app_settings")
       .select("household_enabled, household_minutes")
+      .maybeSingle(),
+    supabase
+      .from("body_measurements")
+      .select("weight_kg")
+      .eq("date", today)
       .maybeSingle(),
   ]);
 
@@ -117,6 +123,8 @@ export default async function CheckinPage() {
             ? null
             : (todayHabits?.household_done ?? null)
         }
+        hrv={todayCheckin?.hrv ?? null}
+        weight={bodyToday?.weight_kg != null ? Number(bodyToday.weight_kg) : null}
         done={done}
       />
 

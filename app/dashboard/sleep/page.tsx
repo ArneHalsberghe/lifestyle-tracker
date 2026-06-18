@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
   bedtimeStatus,
+  brusselsHM,
   durationMin,
   formatDuration,
   formatTime,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/sleep";
 import SleepButtons from "./SleepButtons";
 import NapLogger from "./NapLogger";
+import SleepTimesChart, { type SleepTimePoint } from "./SleepTimesChart";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +51,24 @@ export default async function SleepPage() {
   const open = nights.find((n) => !n.wake_at) ?? null;
   const completed = nights.filter((n) => n.wake_at);
   const lastNight = completed[0] ?? null;
+
+  // slaaptijden-grafiek (oudste → nieuwste)
+  const sleepTimes: SleepTimePoint[] = [...completed]
+    .reverse()
+    .slice(-14)
+    .map((n) => {
+      const b = n.sleep_start_at ? brusselsHM(n.sleep_start_at) : null;
+      const w = n.wake_at ? brusselsHM(n.wake_at) : null;
+      let bedtime = b ? b.h + b.m / 60 : null;
+      if (bedtime != null && b!.h < 12) bedtime += 24; // na middernacht
+      return {
+        date: new Intl.DateTimeFormat("nl-BE", { day: "numeric", month: "short" }).format(
+          new Date(n.date + "T12:00:00Z"),
+        ),
+        bedtime,
+        wake: w ? w.h + w.m / 60 : null,
+      };
+    });
 
   return (
     <main className="px-4 pt-8">
@@ -98,6 +118,11 @@ export default async function SleepPage() {
           </ul>
         </section>
       )}
+
+      {/* Slaaptijden-grafiek */}
+      <section className="mt-4">
+        <SleepTimesChart series={sleepTimes} />
+      </section>
 
       {/* Naps */}
       <section className="mt-4">

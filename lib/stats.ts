@@ -138,6 +138,7 @@ export function buildDays(data: RawData, days: number): DayRow[] {
     r.social = c.social_battery;
     r.loneliness = c.loneliness;
     r.spending = c.spending_eur;
+    r.hrv = c.hrv; // HRV wordt manueel in de check-in ingevuld
   }
 
   for (const h of data.habits) {
@@ -169,12 +170,8 @@ export function buildDays(data: RawData, days: number): DayRow[] {
   for (const a of data.activity) {
     const r = map.get(a.date);
     if (!r) continue;
+    // rusthartslag blijft uit Apple Health komen
     if (a.resting_hr != null) r.restingHr = Number(a.resting_hr);
-    if (a.hrv != null) r.hrv = Number(a.hrv);
-    // slaap-uren komen bij voorkeur uit Health (echte slaaptijd)
-    if (a.sleep_min != null) {
-      r.sleepH = Math.round((Number(a.sleep_min) / 60) * 10) / 10;
-    }
   }
 
   for (const b of data.body) {

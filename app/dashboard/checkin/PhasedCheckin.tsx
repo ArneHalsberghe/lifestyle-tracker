@@ -27,6 +27,8 @@ export default function PhasedCheckin({
   householdEnabled,
   householdMinutes,
   household: household0,
+  hrv: hrv0,
+  weight: weight0,
   done,
 }: {
   initialPhase: Phase;
@@ -39,6 +41,8 @@ export default function PhasedCheckin({
   householdEnabled: boolean;
   householdMinutes: number;
   household: boolean | null;
+  hrv: number | null;
+  weight: number | null;
   done: Record<Phase, boolean>;
 }) {
   const [phase, setPhase] = useState<Phase>(initialPhase);
@@ -48,6 +52,8 @@ export default function PhasedCheckin({
   const [alcohol, setAlcohol] = useState(alcohol0);
   const [spending, setSpending] = useState(spending0 ? String(spending0) : "");
   const [householdDone, setHouseholdDone] = useState<boolean | null>(household0);
+  const [hrv, setHrv] = useState(hrv0 ? String(hrv0) : "");
+  const [weight, setWeight] = useState(weight0 ? String(weight0) : "");
   const [notes, setNotes] = useState("");
   const [pending, run] = useTransition();
   const [doneMsg, setDoneMsg] = useState(false);
@@ -86,6 +92,12 @@ export default function PhasedCheckin({
             ? spending.trim() === ""
               ? null
               : Number(spending)
+            : undefined,
+          hrv: cfg.showHrv ? (hrv.trim() === "" ? null : Number(hrv)) : undefined,
+          weight: cfg.showWeight
+            ? weight.trim() === ""
+              ? null
+              : Number(weight)
             : undefined,
           notes: cfg.showNotes ? notes : undefined,
         });
@@ -251,6 +263,45 @@ export default function PhasedCheckin({
             })}
           </div>
         </section>
+
+        {/* HRV + gewicht (ochtend) */}
+        {(cfg.showHrv || cfg.showWeight) && (
+          <section className="space-y-3 rounded-2xl border border-border bg-surface p-4">
+            {cfg.showHrv && (
+              <label className="flex items-center justify-between gap-3">
+                <span className="text-sm">❤️ HRV (ms)</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={hrv}
+                  onChange={(e) => {
+                    setHrv(e.target.value);
+                    setDoneMsg(false);
+                  }}
+                  placeholder="bv. 45"
+                  className="w-28 rounded-xl border border-border bg-bg px-3 py-2.5 text-sm outline-none focus:border-accent"
+                />
+              </label>
+            )}
+            {cfg.showWeight && (
+              <label className="flex items-center justify-between gap-3">
+                <span className="text-sm">⚖️ Gewicht (kg)</span>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.1"
+                  value={weight}
+                  onChange={(e) => {
+                    setWeight(e.target.value);
+                    setDoneMsg(false);
+                  }}
+                  placeholder="bv. 72.5"
+                  className="w-28 rounded-xl border border-border bg-bg px-3 py-2.5 text-sm outline-none focus:border-accent"
+                />
+              </label>
+            )}
+          </section>
+        )}
 
         {/* Alcohol (evening) */}
         {cfg.showAlcohol && (

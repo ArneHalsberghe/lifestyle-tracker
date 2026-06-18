@@ -104,6 +104,8 @@ export interface PhaseConfig {
   showAlcohol: boolean;
   showSpending: boolean;
   showNotes: boolean;
+  showHrv: boolean;
+  showWeight: boolean;
 }
 
 export const PHASES: PhaseConfig[] = [
@@ -118,6 +120,8 @@ export const PHASES: PhaseConfig[] = [
     showAlcohol: false,
     showSpending: false,
     showNotes: false,
+    showHrv: true,
+    showWeight: true,
   },
   {
     phase: "noon",
@@ -130,6 +134,8 @@ export const PHASES: PhaseConfig[] = [
     showAlcohol: false,
     showSpending: false,
     showNotes: false,
+    showHrv: false,
+    showWeight: false,
   },
   {
     phase: "evening",
@@ -148,6 +154,8 @@ export const PHASES: PhaseConfig[] = [
     showAlcohol: true,
     showSpending: true,
     showNotes: true,
+    showHrv: false,
+    showWeight: false,
   },
 ];
 

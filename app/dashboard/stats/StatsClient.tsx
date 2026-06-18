@@ -268,10 +268,10 @@ function LineCard({
       {has ? (
         <div className="mt-2 h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={rows} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
+            <LineChart data={rows} margin={{ top: 6, right: 8, left: 4, bottom: 0 }}>
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="label" tick={{ fontSize: 9, fill: "var(--muted)" }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
-              <YAxis domain={domain ?? ["auto", "auto"]} tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={28} />
+              <YAxis domain={domain ?? ["auto", "auto"]} tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={40} />
               <Tooltip contentStyle={tooltipStyle} />
               {lines.map((l) => (
                 <Line key={String(l.key)} type="monotone" dataKey={l.key as string} name={l.label} stroke={l.color} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -294,9 +294,9 @@ function BarCard({ title, data, color }: { title: string; data: { week: string; 
       {has ? (
         <div className="mt-2 h-40 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
+            <BarChart data={data} margin={{ top: 6, right: 8, left: 4, bottom: 0 }}>
               <XAxis dataKey="week" tick={{ fontSize: 9, fill: "var(--muted)" }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={24} />
-              <YAxis tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={28} />
+              <YAxis tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={40} />
               <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--border)", opacity: 0.3 }} />
               <Bar dataKey="value" fill={color} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -332,9 +332,9 @@ function BarWeekCard({
       {has ? (
         <div className="mt-2 h-40 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
+            <BarChart data={data} margin={{ top: 6, right: 8, left: 4, bottom: 0 }}>
               <XAxis dataKey="week" tick={{ fontSize: 9, fill: "var(--muted)" }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={24} />
-              <YAxis tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={32} />
+              <YAxis tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={48} />
               <Tooltip
                 contentStyle={tooltipStyle}
                 cursor={{ fill: "var(--border)", opacity: 0.3 }}

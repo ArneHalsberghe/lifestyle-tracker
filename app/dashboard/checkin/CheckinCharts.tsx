@@ -78,7 +78,7 @@ export default function CheckinCharts({ series }: { series: DayPoint[] }) {
           </div>
           <div className="mt-2 h-44 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={series} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
+              <LineChart data={series} margin={{ top: 6, right: 8, left: 4, bottom: 0 }}>
                 <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -94,7 +94,7 @@ export default function CheckinCharts({ series }: { series: DayPoint[] }) {
                   tick={{ fontSize: 10, fill: "var(--muted)" }}
                   tickLine={false}
                   axisLine={false}
-                  width={28}
+                  width={40}
                 />
                 <Tooltip
                   contentStyle={{

@@ -152,6 +152,7 @@ export interface DailyCheckin {
   motivation: number | null;
   social_battery: number | null;
   loneliness: number | null;
+  hrv: number | null;
   notes: string | null;
   spending_eur: number | null;
   morning_done: boolean | null;

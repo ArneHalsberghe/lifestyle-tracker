@@ -1,7 +1,5 @@
--- =============================================================
 -- Lifestyle Tracker — VOLLEDIGE database setup (herhaalbaar)
--- Plak dit hele bestand in Supabase > SQL Editor en klik Run.
--- =============================================================
+-- Plak in Supabase > SQL Editor en Run.
 
 -- >>>>>>>>>>>>>>>>>>>> 0001_init.sql <<<<<<<<<<<<<<<<<<<<
 
@@ -921,3 +919,13 @@ create unique index if not exists uniq_app_settings_health_token
 
 alter table public.daily_activity add column if not exists hrv       integer;
 alter table public.daily_activity add column if not exists sleep_min integer;
+
+-- >>>>>>>>>>>>>>>>>>>> 0013_checkin_hrv.sql <<<<<<<<<<<<<<<<<<<<
+
+-- =============================================================
+-- Lifestyle Tracker — HRV manueel in de check-in
+-- Run AFTER 0012, in Supabase SQL Editor.
+-- (HRV zit niet in Arne's Apple Health, dus manueel invoeren.)
+-- =============================================================
+
+alter table public.daily_checkins add column if not exists hrv integer;

@@ -45,10 +45,10 @@ export default function MoodTrend({ series }: { series: MoodPoint[] }) {
       </div>
       <div className="mt-2 h-44 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={series} margin={{ top: 6, right: 6, left: -22, bottom: 0 }}>
+          <LineChart data={series} margin={{ top: 6, right: 8, left: 4, bottom: 0 }}>
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="date" tick={{ fontSize: 9, fill: "var(--muted)" }} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
-            <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={26} />
+            <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} tick={{ fontSize: 10, fill: "var(--muted)" }} tickLine={false} axisLine={false} width={40} />
             <Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12, color: "var(--text)" }} />
             {lines.map((l) => (
               <Line key={l.key} type="monotone" dataKey={l.key} name={l.label} stroke={l.color} strokeWidth={2} dot={{ r: 2 }} connectNulls />
